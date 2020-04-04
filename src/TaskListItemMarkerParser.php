@@ -11,19 +11,29 @@
 
 namespace League\CommonMark\Ext\TaskList;
 
-use League\CommonMark\Block\Element\ListItem;
-use League\CommonMark\Block\Element\Paragraph;
+use League\CommonMark\Extension\TaskList\TaskListItemMarkerParser as CoreParser;
 use League\CommonMark\Inline\Parser\InlineParserInterface;
 use League\CommonMark\InlineParserContext;
 
+/**
+ * @deprecated The league/commonmark-ext-task-list extension is now deprecated. All functionality has been moved into league/commonmark 1.3+, so use that instead.
+ */
 final class TaskListItemMarkerParser implements InlineParserInterface
 {
+    private $coreParser;
+
+    public function __construct()
+    {
+        @trigger_error(sprintf('league/commonmark-ext-task-list is deprecated; use %s from league/commonmark 1.3+ instead', CoreParser::class), E_USER_DEPRECATED);
+        $this->coreParser = new CoreParser();
+    }
+
     /**
      * @return string[]
      */
     public function getCharacters(): array
     {
-        return ['['];
+        return $this->coreParser->getCharacters();
     }
 
     /**
@@ -33,31 +43,6 @@ final class TaskListItemMarkerParser implements InlineParserInterface
      */
     public function parse(InlineParserContext $inlineContext): bool
     {
-        $container = $inlineContext->getContainer();
-
-        // Checkbox must come at the beginning of the first paragraph of the list item
-        if ($container->hasChildren() || !($container instanceof Paragraph && $container->parent() && $container->parent() instanceof ListItem)) {
-            return false;
-        }
-
-        $cursor = $inlineContext->getCursor();
-        $oldState = $cursor->saveState();
-
-        $m = $cursor->match('/\[[ xX]\]/');
-        if ($m === null) {
-            return false;
-        }
-
-        if ($cursor->getNextNonSpaceCharacter() === null) {
-            $cursor->restoreState($oldState);
-
-            return false;
-        }
-
-        $isChecked = $m !== '[ ]';
-
-        $container->appendChild(new TaskListItemMarker($isChecked));
-
-        return true;
+        return $this->coreParser->parse($inlineContext);
     }
 }
