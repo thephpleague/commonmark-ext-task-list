@@ -12,12 +12,24 @@
 namespace League\CommonMark\Ext\TaskList;
 
 use League\CommonMark\ElementRendererInterface;
+use League\CommonMark\Extension\TaskList\TaskListItemMarkerRenderer as CoreRenderer;
 use League\CommonMark\HtmlElement;
 use League\CommonMark\Inline\Element\AbstractInline;
 use League\CommonMark\Inline\Renderer\InlineRendererInterface;
 
+/**
+ * @deprecated The league/commonmark-ext-task-list extension is now deprecated. All functionality has been moved into league/commonmark 1.3+, so use that instead.
+ */
 final class TaskListItemMarkerRenderer implements InlineRendererInterface
 {
+    private $coreRenderer;
+
+    public function __construct()
+    {
+        @trigger_error(sprintf('league/commonmark-ext-task-list is deprecated; use %s from league/commonmark 1.3+ instead', CoreRenderer::class), E_USER_DEPRECATED);
+        $this->coreRenderer = new CoreRenderer();
+    }
+
     /**
      * @param AbstractInline           $inline
      * @param ElementRendererInterface $htmlRenderer
@@ -26,16 +38,6 @@ final class TaskListItemMarkerRenderer implements InlineRendererInterface
      */
     public function render(AbstractInline $inline, ElementRendererInterface $htmlRenderer)
     {
-        if (!($inline instanceof TaskListItemMarker)) {
-            throw new \InvalidArgumentException('Incompatible inline type: ' . \get_class($inline));
-        }
-
-        $checkbox = new HtmlElement('input', ['disabled' => '', 'type' => 'checkbox'], '', true);
-
-        if ($inline->isChecked()) {
-            $checkbox->setAttribute('checked', '');
-        }
-
-        return $checkbox;
+        return $this->coreRenderer->render($inline, $htmlRenderer);
     }
 }

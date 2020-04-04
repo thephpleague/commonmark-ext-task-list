@@ -13,24 +13,32 @@ namespace League\CommonMark\Ext\TaskList;
 
 use League\CommonMark\Inline\Element\AbstractInline;
 
-final class TaskListItemMarker extends AbstractInline
-{
-    protected $checked = false;
+@trigger_error('league/commonmark-ext-task-list is deprecated; use League\CommonMark\Extension\TaskList\TaskListItemMarker from league/commonmark 1.3+ instead', E_USER_DEPRECATED);
+class_alias('League\CommonMark\Extension\TaskList\TaskListItemMarker', 'League\CommonMark\Ext\TaskList\TaskListItemMarker');
 
-    public function __construct(bool $isCompleted)
+if (false) {
+    /**
+     * @deprecated The league/commonmark-ext-task-list extension is now deprecated. All functionality has been moved into league/commonmark 1.3+, so use that instead.
+     */
+    final class TaskListItemMarker extends AbstractInline
     {
-        $this->checked = $isCompleted;
-    }
+        protected $checked = false;
 
-    public function isChecked(): bool
-    {
-        return $this->checked;
-    }
+        public function __construct(bool $isCompleted)
+        {
+            $this->checked = $isCompleted;
+        }
 
-    public function setChecked(bool $checked): self
-    {
-        $this->checked = $checked;
+        public function isChecked(): bool
+        {
+            return $this->checked;
+        }
 
-        return $this;
+        public function setChecked(bool $checked): self
+        {
+            $this->checked = $checked;
+
+            return $this;
+        }
     }
 }

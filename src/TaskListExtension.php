@@ -13,12 +13,23 @@ namespace League\CommonMark\Ext\TaskList;
 
 use League\CommonMark\ConfigurableEnvironmentInterface;
 use League\CommonMark\Extension\ExtensionInterface;
+use League\CommonMark\Extension\TaskList\TaskListExtension as CoreExtension;
 
+/**
+ * @deprecated The league/commonmark-ext-task-list extension is now deprecated. All functionality has been moved into league/commonmark 1.3+, so use that instead.
+ */
 final class TaskListExtension implements ExtensionInterface
 {
+    private $coreExtension;
+
+    public function __construct()
+    {
+        @trigger_error(sprintf('league/commonmark-ext-task-list is deprecated; use %s from league/commonmark 1.3+ instead', CoreExtension::class), E_USER_DEPRECATED);
+        $this->coreExtension = new CoreExtension();
+    }
+
     public function register(ConfigurableEnvironmentInterface $environment)
     {
-        $environment->addInlineParser(new TaskListItemMarkerParser(), 35);
-        $environment->addInlineRenderer(TaskListItemMarker::class, new TaskListItemMarkerRenderer());
+        $this->coreExtension->register($environment);
     }
 }
